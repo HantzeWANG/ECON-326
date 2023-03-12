@@ -2,6 +2,7 @@ library(data.table)
 library(ggplot2)
 library(tidyverse)
 library(haven)
+library(stargazer)
 
 # Read data
 data <- read_dta('CCHS_Annual_2017_2018_curated_trimmed.dta')
@@ -95,3 +96,15 @@ veryGood <- ifelse(dataFiltered$GEN_005 == 2, 1, 0)
 good <- ifelse(dataFiltered$GEN_005 == 3, 1, 0)
 fair <- ifelse(dataFiltered$GEN_005 == 4, 1, 0)
 dataG <- data.frame(excellent, veryGood, good, fair)
+# combine dataG, dataM, dataE and dataFiltered
+dataFiltered <- cbind(dataFiltered, dataG, dataM, dataE)
+
+# use stargazer to create a linear regression table, dependent variable is GEN_010, independent variables are GEN_005
+model1 <- lm(GEN_010 ~ GEN_005, data = dataFiltered)
+stargazer(model1, type = "text")
+
+model2 <- lm(GEN_010 ~ GEN_005 + incdghh, data = dataFiltered)
+stargazer(model2, type = "text")
+
+model3 <- lm(GEN_010 ~ GEN_005 + incdghh + Married, data = dataFiltered)
+stargazer(model3, type = "text")
