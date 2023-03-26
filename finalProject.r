@@ -100,11 +100,17 @@ dataG <- data.frame(excellent, veryGood, good, fair)
 dataFiltered <- cbind(dataFiltered, dataG, dataM, dataE)
 
 # use stargazer to create a linear regression table, dependent variable is GEN_010, independent variables are GEN_005
-model1 <- lm(GEN_010 ~ GEN_005, data = dataFiltered)
+model1 <- lm(GEN_010 ~ excellent, data = dataFiltered)
 stargazer(model1, type = "text")
 
-model2 <- lm(GEN_010 ~ GEN_005 + incdghh, data = dataFiltered)
+model2 <- lm(GEN_010 ~ excellent + incdghh, data = dataFiltered)
 stargazer(model2, type = "text")
 
-model3 <- lm(GEN_010 ~ GEN_005 + incdghh + Married, data = dataFiltered)
+model3 <- lm(GEN_010 ~ excellent + incdghh + Married, data = dataFiltered)
 stargazer(model3, type = "text")
+
+# use VIF to check multicollinearity
+#IMPORTANT: the VIF function is in the car package, so you need to install the car package first
+library(car)
+
+vif(model3)
